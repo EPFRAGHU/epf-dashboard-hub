@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPF Toolkit — Raghunath Maharana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0D12;
+    --bg-soft: #10141B;
+    --surface: #141922;
+    --surface-hover: #1A212C;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+    --text: #E7E9EE;
+    --text-dim: #8891A0;
+    --text-faint: #5B6373;
+    --accent-a: #33E0C2;
+    --accent-b: #6D6BFF;
+    --accent-warm: #FF9A62;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ambient background glow */
+  .glow{
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.28;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .glow-1{
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, var(--accent-a), transparent 70%);
+    top: -180px; left: -120px;
+  }
+  .glow-2{
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, var(--accent-b), transparent 70%);
+    top: 200px; right: -200px;
+    opacity: 0.22;
+  }
+  .glow-3{
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--accent-warm), transparent 70%);
+    bottom: -160px; left: 30%;
+    opacity: 0.14;
+  }
+
+  .noise{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 28px 90px;
+  }
+
+  nav{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 30px 0 0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .brand .dot{
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  }
+  nav .byline{
+    font-size: 12.5px;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero{
+    padding: 90px 0 64px;
+    max-width: 700px;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent-a);
+    background: rgba(51,224,194,0.08);
+    border: 1px solid rgba(51,224,194,0.24);
+    padding: 6px 12px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .eyebrow .pulse{
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-a);
+    box-shadow: 0 0 0 0 rgba(51,224,194,0.5);
+    animation: pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(51,224,194,0.45); }
+    70%{ box-shadow: 0 0 0 7px rgba(51,224,194,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(51,224,194,0); }
+  }
+
+  h1{
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+  }
+  h1 .grad{
+    background: linear-gradient(120deg, var(--accent-a), var(--accent-b));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p{
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    margin: 0 0 4px;
+    max-width: 560px;
+  }
+
+  .section-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    margin: 0 0 18px;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .section-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: var(--border);
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  .card{
+    display:flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    text-decoration: none;
+    color: var(--text);
+    position: relative;
+    transition: all 0.25s cubic-bezier(.2,.7,.3,1);
+    isolation: isolate;
+  }
+  .card::before{
+    content:"";
+    position: absolute;
+    inset: -1px;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: -1;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    background: var(--surface-hover);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  }
+  .card:hover::before{ opacity: 1; }
+
+  .card-top{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .card-icon{
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 17px;
+    background: linear-gradient(135deg, rgba(51,224,194,0.16), rgba(109,107,255,0.16));
+    border: 1px solid var(--border);
+  }
+  .status{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 9px;
+    border-radius: 100px;
+    color: var(--accent-a);
+    background: rgba(51,224,194,0.08);
+    border: 1px solid rgba(51,224,194,0.2);
+  }
+  .status.beta{
+    color: var(--accent-warm);
+    background: rgba(255,154,98,0.08);
+    border-color: rgba(255,154,98,0.22);
+  }
+  .status.external{
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border);
+  }
+
+  .card h2{
+    font-family: 'Sora', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .card p{
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-dim);
+    margin: 0 0 20px;
+    flex: 1;
+  }
+  .card-foot{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .card-url{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .card-arrow{
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 13px;
+    transition: all 0.25s ease;
+  }
+  .card:hover .card-arrow{
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    color: #0A0D12;
+    transform: translateX(2px);
+  }
+
+  footer{
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  footer .disclaimer{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 560px){
+    h1{ font-size: 32px; }
+    .hero{ padding: 60px 0 44px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+<div class="noise"></div>
+
+<div class="wrap">
+
+  <nav>
+    <div class="brand"><span class="dot"></span> EPF Toolkit</div>
+    <div class="byline">by Raghunath Maharana</div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow"><span class="pulse"></span> Personal project · not an official EPFO service</div>
+    <h1>Tools I've built to make <span class="grad">PF compliance</span> less painful.</h1>
+    <p>A growing set of small apps for wage registers, ECR filing, establishment lookups and more — built in spare time, used in real work, shared here in one place.</p>
+  </div>
+
+  <div class="section-label">Tools</div>
+  <div class="grid" id="card-grid"><!-- injected --></div>
+
+  <footer>
+    <div class="disclaimer">// personal project — no official affiliation with EPFO</div>
+    <div>epf-dashboard.online</div>
+  </footer>
+
+</div>
+
+<script>
+  // Add a new tool by adding an entry here — icon is any emoji or short glyph.
+  const TOOLS = [
+    {
+      icon: "📄",
+      status: "New",
+      name: "ECR Generator",
+      description: "Build the monthly wage register and generate ECR / Exit text files ready for portal upload.",
+      url: "https://ecr-generator.epf-dashboard.online",
+    },
+    {
+      icon: "📊",
+      status: "Live",
+      name: "ECR Viewer",
+      description: "Browse monthly ECR, employee and contribution data by financial year, per establishment.",
+      url: "https://ecr-viewer.epf-dashboard.online",
+    },
+    {
+      icon: "🔍",
+      status: "Live",
+      name: "Establishment Search",
+      description: "Look up establishment master records across registered EPFO offices.",
+      url: "https://est-master.epf-dashboard.online",
+    },
+    {
+      icon: "🗂️",
+      status: "Live",
+      statusClass: "external",
+      name: "EPF Admin Dashboard",
+      description: "Multi-tenant admin console for consultants and establishments managing compliance.",
+      url: "https://epf-dashboard.xyz",
+    },
+  ];
+
+  const grid = document.getElementById('card-grid');
+  TOOLS.forEach(tool => {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = tool.url;
+    const statusClass = tool.statusClass ? tool.statusClass : (tool.status === 'New' ? 'beta' : '');
+    a.innerHTML = `
+      <div class="card-top">
+        <div class="card-icon">${tool.icon}</div>
+        <div class="status ${statusClass}">${tool.status}</div>
+      </div>
+      <h2>${tool.name}</h2>
+      <p>${tool.description}</p>
+      <div class="card-foot">
+        <span class="card-url">${tool.url.replace('https://','')}</span>
+        <span class="card-arrow">→</span>
+      </div>
+    `;
+    grid.appendChild(a);
+  });
+</script>
+
+</body>
+</html>
